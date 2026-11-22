@@ -1,0 +1,126 @@
+import { mountCockpit } from './cockpit.js';
+import { ENGINE_CATCH_MS, MotorcycleAudio } from './sound.js';
+import { RoadFilm } from './road.js';
+
+const root = document.documentElement;
+const byId = id => document.getElementById(id);
+const key = byId('key'), rocker = byId('rocker'), starter = byId('starter'), throttle = byId('throttle');
+const speaker = byId('speaker'), content = byId('club-content'), title = byId('ride-title'), status = byId('status');
+const sound = new MotorcycleAudio();
+const grip = mountCockpit();
+const road = new RoadFilm(byId('road-film'), byId('ride'));
+let stage = 'off', fireTimer, welcomeTimer, pressTimer, revTimer;
+const messages = {
+  off: 'Двигатель заглушён. Приборы погасли.',
+  powered: 'Нейтраль. Индикатор запуска красный.',
+  armed: 'Индикатор запуска зелёный. Бензонасос включён.',
+  cranking: 'Стартер крутится.',
+  running: 'Двигатель работает. Мы в колонне. Разделы клуба доступны ниже.'
+};
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+function setStage(next) {
+  stage = next;
+  root.dataset.stage = next;
+  const powered = next !== 'off';
+  const armed = ['armed','cranking','running'].includes(next);
+  root.toggleAttribute('data-key-on', powered);
+  root.toggleAttribute('data-run-switch', armed);
+  key.setAttribute('aria-pressed', String(powered));
+  rocker.setAttribute('aria-pressed', String(armed));
+  throttle.disabled = next !== 'running';
+  status.textContent = messages[next];
+}
+function fire() {
+  if (stage !== 'cranking') return;
+  setStage('running');
+  content.hidden = false;
+  content.inert = false;
+  root.setAttribute('data-unlocked','');
+  welcomeTimer = setTimeout(() => {
+    if (stage !== 'running') return;
+    title.inert = false;
+    title.setAttribute('aria-hidden','false');
+    root.setAttribute('data-in-club','');
+    speaker.hidden = false;
+  },3000);
+}
+function shutDown(next) {
+  clearTimeout(fireTimer); clearTimeout(welcomeTimer); clearTimeout(pressTimer); clearTimeout(revTimer);
+  const wasOpen = root.hasAttribute('data-unlocked');
+  if (wasOpen) {
+    window.dispatchEvent(new Event('club-closed'));
+    window.scrollTo({top:0,behavior:'instant'});
+    if (location.hash) history.replaceState(null,'',location.pathname + location.search);
+  }
+  root.removeAttribute('data-unlocked');
+  root.removeAttribute('data-in-club');
+  root.removeAttribute('data-starter-down');
+  root.removeAttribute('data-revving');
+  title.inert = true;
+  title.setAttribute('aria-hidden','true');
+  speaker.hidden = true;
+  content.inert = true;
+  content.hidden = true;
+  grip.reset();
+  road.stop();
+  sound.stop();
+  setStage(next);
+}
+function physicalPress() {
+  clearTimeout(pressTimer);
+  root.setAttribute('data-starter-down','');
+  pressTimer = setTimeout(() => root.removeAttribute('data-starter-down'),175);
+}
+key.addEventListener('click', () => {
+  sound.unlock(); sound.click('key');
+  if (stage === 'off') { setStage('powered'); road.prepare(); }
+  else shutDown('off');
+});
+rocker.addEventListener('click', () => {
+  sound.unlock();
+  if (stage === 'off') return;
+  sound.click('rocker');
+  if (stage === 'powered') { setStage('armed'); sound.primeFuel(); }
+  else shutDown('powered');
+});
+starter.addEventListener('pointerdown', physicalPress);
+starter.addEventListener('click', () => {
+  sound.unlock(); physicalPress(); sound.pressStarter();
+  if (stage !== 'armed') {
+    if (stage === 'off' || stage === 'powered') status.textContent = 'Щелчок кнопки стартера.';
+    return;
+  }
+  setStage('cranking');
+  sound.start();
+  // The starter tap authorizes inline movie playback on mobile browsers.
+  road.start();
+  fireTimer = setTimeout(fire, ENGINE_CATCH_MS);
+});
+function openThrottle() {
+  if (stage !== 'running') return;
+  sound.unlock(); sound.rev(); grip.blip(); road.surge();
+  root.setAttribute('data-revving','');
+  clearTimeout(revTimer);
+  revTimer = setTimeout(() => root.removeAttribute('data-revving'),880);
+}
+throttle.addEventListener('pointerdown', event => {
+  if (event.isPrimary && event.button === 0) openThrottle();
+});
+throttle.addEventListener('click', event => {
+  if (event.detail === 0 || !window.PointerEvent) openThrottle();
+});
+document.addEventListener('visibilitychange', () => { if (document.hidden) grip.reset(); });
+window.addEventListener('pagehide', () => grip.reset());
+speaker.addEventListener('click', () => {
+  sound.unlock(); sound.setMuted(!sound.muted);
+  speaker.setAttribute('aria-pressed',String(!sound.muted));
+  const label = sound.muted ? 'Включить звук' : 'Выключить звук';
+  speaker.setAttribute('aria-label',label);
+  speaker.title = label;
+});
+byId('reset').addEventListener('click', () => {
+  const withFocus = byId('reset').matches(':focus-visible');
+  sound.unlock(); sound.click('key'); shutDown('off');
+  if (withFocus) key.focus({preventScroll:true});
+});

@@ -1,0 +1,5 @@
+harley-sportster.wav and harley-throttle.wav
+Field recording: “Harley Davidson Sportster - Idling with Engine Revs” by demodave.
+https://freesound.org/people/demodave/sounds/502690/
+CC0 1.0 Universal: https://creativecommons.org/publicdomain/zero/1.0/
+Edited from the published recording: phase-aligned mono, equalization, seamless idle loop and an isolated throttle blip.
