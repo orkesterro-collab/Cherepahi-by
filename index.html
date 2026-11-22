@@ -7,14 +7,14 @@
   <meta name="description" content="Минский мотоклуб «Черепахи». Заведи чоппер, выезжай с колонной и загляни в клубный календарь поездок по Беларуси.">
   <title>Черепахи · Мотоклуб Минск</title>
   <link rel="icon" type="image/webp" href="assets/club-crest.webp">
-  <link rel="preload" as="image" href="assets/cockpit-studio-portrait.webp" media="(max-aspect-ratio: 1/1)">
-  <link rel="preload" as="image" href="assets/cockpit-studio-wide.webp" media="(min-aspect-ratio: 1/1)">
+  <link rel="preload" as="image" href="assets/cockpit-studio-portrait.webp" media="(max-aspect-ratio: 3/4)">
+  <link rel="preload" as="image" href="assets/cockpit-studio-wide.webp" media="(aspect-ratio > 3/4)">
   <link rel="preload" as="image" href="assets/elbrus-key.webp">
   <link rel="preload" as="image" href="assets/elbrus-charm.webp">
   <link rel="preload" as="fetch" href="assets/harley-sportster.wav" crossorigin="anonymous">
-  <link rel="stylesheet" href="scene.css?v=finale-1">
+  <link rel="stylesheet" href="scene.css?v=daylight-2">
   <link rel="stylesheet" href="club.css">
-  <script type="module" src="ignition.js?v=finale-1"></script>
+  <script type="module" src="ignition.js?v=daylight-2"></script>
   <script type="module" src="club.js"></script>
 </head>
 <body>
@@ -22,10 +22,9 @@
     <section id="ride" aria-label="Чоппер. Вид с места водителя">
       <div id="road-world" aria-hidden="true">
         <picture>
-          <source media="(orientation: landscape)" srcset="assets/day-road-wide.webp">
-          <img id="road-poster" src="assets/day-road-portrait.webp" fetchpriority="low" alt="">
+          <source media="(orientation: landscape)" srcset="assets/ride-road-wide.webp">
+          <img id="road-poster" src="assets/ride-road-portrait.webp" alt="" decoding="async">
         </picture>
-        <video id="road-film" muted loop playsinline preload="none" disablepictureinpicture></video>
       </div>
       <div id="ride-pose"><div id="camera">
         <canvas id="night" class="plate" aria-hidden="true"></canvas>
@@ -50,20 +49,11 @@
         </div>
       </div></div>
       <div id="ride-title" inert aria-hidden="true">
-        <div class="final-frame">
-          <img id="final-photo" src="assets/ride-finale.webp" alt="Четыре чоппера едут в шахматном порядке под эмблемой «Черепахи Минск»" width="934" height="1685" decoding="async" fetchpriority="low">
-          <h1 class="sr-only">Братство, дорога, свобода</h1>
-          <div class="final-controls" role="group" aria-label="Управление чоппером">
-            <button type="button" data-control="key" aria-label="Ключ зажигания"></button>
-            <button type="button" data-control="rocker" aria-label="Выключить двигатель"></button>
-            <button type="button" data-control="starter" aria-label="Стартер"></button>
-            <button type="button" data-control="throttle" aria-label="Ручка газа"></button>
-          </div>
-          <a class="scroll-cue" href="#about" aria-label="Перейти к разделу о клубе"></a>
-          <button id="frame-speaker" type="button" aria-label="Выключить звук" title="Выключить звук" aria-pressed="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h4l5-4v14l-5-4H3zM16 9l5 6m0-6-5 6"/></svg>
-          </button>
-        </div>
+        <img class="ride-crest" src="assets/club-crest.webp" width="472" height="480" alt="Черепахи · Минск" draggable="false">
+        <h1 class="ride-motto"><span>Братство</span> <span>Дорога</span> <span>Свобода</span></h1>
+        <a class="scroll-cue" href="#about" aria-label="Перейти к разделу о клубе">
+          <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4v23M5 16l11 11 11-11"/></svg>
+        </a>
       </div>
       <p id="status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
       <noscript><p class="fallback">Для запуска мотоцикла включи JavaScript в браузере.</p></noscript>

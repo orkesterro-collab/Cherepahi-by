@@ -35,32 +35,25 @@ function photo(name) {
   return artCache.get(key);
 }
 
-// Keep the controls in one coordinate system. Extra height goes to the dark
-// space overhead and the lower tank, outside the illuminated hardware.
+// The two exposures and all controls share one projection throughout the ride.
 function projection(p, width, height) {
-  const scale = Math.min(width / p.width, height / (p === portrait ? 1010 : 615));
+  const scale = p === portrait ? width / p.width : Math.min(width / 1350, height / 1070);
   const left = (width - p.width * scale) / 2;
-  const difference = height - p.height * scale;
-  const extra = Math.max(0, difference);
-  const start = Math.min(0, difference) * .45;
+  const dialTop = p.dial.y - 1.2 * p.dial.ry;
+  const offset = height * (p === portrait ? .438 : .423) - dialTop * scale;
   const marks = [0, p.sky, p.horizon, p.tank, p.height];
-  const dst = marks.map(raw => start + raw * scale);
-  dst[2] += extra * .36;
-  dst[3] += extra * .36;
-  dst[4] += extra;
+  const dst = [0, p.sky * scale, offset + p.horizon * scale,
+    offset + p.tank * scale, Math.max(height, offset + p.height * scale)];
   function y(raw) {
     let band = 0;
     while (band < marks.length - 2 && raw > marks[band + 1]) band++;
     return dst[band] + (raw - marks[band]) * (dst[band + 1] - dst[band]) / (marks[band + 1] - marks[band]);
   }
-  // On a wide screen frame the stationary bars like the approved portrait:
-  // the outer grips and mirrors run off the edges, while the whole key stays visible.
-  const studioZoom = p === landscape ? clamp(Math.min(width/(1015*scale),height/(590*scale)),1,1.72) : 1;
-  return { width, height, scale, studioZoom, left, x: raw => left + raw * scale, y, marks, dst };
+  return { width, height, scale, left, x: raw => left + raw * scale, y, marks, dst };
 }
 
 function paintPlate(canvas, img, p, g, transparent) {
-  const density = Math.min(2, (window.devicePixelRatio || 1)*(transparent ? 1 : g.studioZoom));
+  const density = Math.min(2, window.devicePixelRatio || 1);
   canvas.width = Math.round(g.width * density);
   canvas.height = Math.round(g.height * density);
   const ctx = canvas.getContext('2d', {alpha: transparent});
@@ -207,20 +200,12 @@ function fitParts(p, g, rockerBox) {
   const bottom=Math.max(g.y(sy)+Math.max(23,35*s), split+44);
   rect(byId('rocker'),leftBound(cx),top,width,split-top);
   rect(byId('starter'),leftBound(sx),split,width,bottom-split);
-  const travel=Math.max(0, Math.min(
-    g.height*.586 - g.y(y-ry*1.14),
-    g.height*.81 - g.y(p.grip[0][1]),
-    g.height*.91 - g.y(p.lock[1])
-  ));
-  root.style.setProperty('--travel-y', travel+'px');
-  root.style.setProperty('--studio-zoom',g.studioZoom);
-  root.style.setProperty('--studio-origin-y',g.y(p.dial.y+105)+'px');
 }
 
 export function mountCockpit() {
   const stage=byId('ride');
   const grip=new ThrottleGrip(byId('grip-skin'), byId('throttle'));
-  let profile, studio, sun, box, frameId=0;
+  let profile, requested, studio, sun, box, frameId=0;
   function draw() {
     if (!studio || !stage.clientWidth || !stage.clientHeight) return;
     const g=projection(profile,stage.clientWidth,stage.clientHeight);
@@ -234,27 +219,34 @@ export function mountCockpit() {
   }
   async function update() {
     frameId=0;
-    const selected=stage.clientWidth > stage.clientHeight ? landscape : portrait;
-    if (profile===selected) { draw(); return; }
-    profile=selected; studio=null; sun=null;
-    byId('controls').inert=true;
-    root.removeAttribute('data-scene-ready');
-    root.removeAttribute('data-bike-ready');
+    const selected=stage.clientWidth / stage.clientHeight > .75 ? landscape : portrait;
+    if (requested===selected) { draw(); return; }
+    requested=selected;
     try {
-      const img=await photo('cockpit-studio-'+selected.variant);
-      if (profile!==selected) return;
-      studio=img;
+      const loadStudio=photo('cockpit-studio-'+selected.variant);
+      const loadDay=photo('cockpit-riding-'+selected.variant);
+      const scene=Promise.all([loadStudio, loadDay, byId('road-poster').decode(), document.querySelector('.ride-crest').decode()]);
+      if (!studio) {
+        // Paint the puzzle immediately while its daylight layers are loading.
+        loadStudio.then(img => {
+          if (requested!==selected || studio) return;
+          profile=selected; studio=img;
+          makeDial(selected,img);
+          box=makeRocker(selected,img);
+          draw();
+        }).catch(() => {});
+      }
+      const [img,riding]=await scene;
+      if (requested!==selected) return;
+      profile=selected; studio=img; sun=riding;
       makeDial(selected,img);
       box=makeRocker(selected,img);
-      draw();
-      const riding=await photo('cockpit-riding-'+selected.variant);
-      if (profile!==selected) return;
-      sun=riding;
       makeMovingNeedle(selected,riding);
       draw();
+      window.dispatchEvent(new Event('ride-ready'));
     } catch {
-      if (!studio && profile===selected) {
-        profile=null;
+      if (requested===selected) {
+        requested=null;
         byId('status').textContent='Сцена не загрузилась. Обнови страницу.';
       }
     }
@@ -262,6 +254,7 @@ export function mountCockpit() {
   const schedule=()=>{if(!frameId) frameId=requestAnimationFrame(update);};
   new ResizeObserver(schedule).observe(stage);
   window.addEventListener('pageshow',schedule);
+  window.addEventListener('online',schedule);
   update();
   return grip;
 }
