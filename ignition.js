@@ -6,10 +6,12 @@ const root = document.documentElement;
 const byId = id => document.getElementById(id);
 const key = byId('key'), rocker = byId('rocker'), starter = byId('starter'), throttle = byId('throttle');
 const speaker = byId('speaker'), content = byId('club-content'), title = byId('ride-title'), status = byId('status');
+const frameSpeaker = byId('frame-speaker'), finalPhoto = byId('final-photo');
 const sound = new MotorcycleAudio();
 const grip = mountCockpit();
 const road = new RoadFilm(byId('road-film'), byId('ride'));
 let stage = 'off', fireTimer, welcomeTimer, pressTimer, revTimer;
+let frameSpeakerVisible = true;
 const messages = {
   off: 'Двигатель заглушён. Приборы погасли.',
   powered: 'Нейтраль. Индикатор запуска красный.',
@@ -37,13 +39,20 @@ function fire() {
   content.hidden = false;
   content.inert = false;
   root.setAttribute('data-unlocked','');
-  welcomeTimer = setTimeout(() => {
-    if (stage !== 'running') return;
+  const reveal = setTimeout(async () => {
+    try {
+      await finalPhoto.decode();
+    } catch {
+      if (stage === 'running' && welcomeTimer === reveal) speaker.hidden = false;
+      return;
+    }
+    if (stage !== 'running' || welcomeTimer !== reveal) return;
     title.inert = false;
     title.setAttribute('aria-hidden','false');
     root.setAttribute('data-in-club','');
-    speaker.hidden = false;
+    updateSpeakers();
   },3000);
+  welcomeTimer = reveal;
 }
 function shutDown(next) {
   clearTimeout(fireTimer); clearTimeout(welcomeTimer); clearTimeout(pressTimer); clearTimeout(revTimer);
@@ -59,7 +68,7 @@ function shutDown(next) {
   root.removeAttribute('data-revving');
   title.inert = true;
   title.setAttribute('aria-hidden','true');
-  speaker.hidden = true;
+  updateSpeakers();
   content.inert = true;
   content.hidden = true;
   grip.reset();
@@ -110,15 +119,35 @@ throttle.addEventListener('pointerdown', event => {
 throttle.addEventListener('click', event => {
   if (event.detail === 0 || !window.PointerEvent) openThrottle();
 });
+title.querySelector('.final-controls').addEventListener('click', event => {
+  const control = event.target.closest('button[data-control]');
+  if (!control || stage !== 'running') return;
+  const cockpitButton = byId(control.dataset.control);
+  cockpitButton.click();
+  if (title.inert && event.detail === 0) cockpitButton.focus({preventScroll:true});
+});
 document.addEventListener('visibilitychange', () => { if (document.hidden) grip.reset(); });
 window.addEventListener('pagehide', () => grip.reset());
-speaker.addEventListener('click', () => {
+function toggleSound() {
   sound.unlock(); sound.setMuted(!sound.muted);
-  speaker.setAttribute('aria-pressed',String(!sound.muted));
   const label = sound.muted ? 'Включить звук' : 'Выключить звук';
-  speaker.setAttribute('aria-label',label);
-  speaker.title = label;
-});
+  for (const button of [speaker, frameSpeaker]) {
+    button.setAttribute('aria-pressed', String(!sound.muted));
+    button.setAttribute('aria-label', label);
+    button.title = label;
+  }
+}
+speaker.addEventListener('click', toggleSound);
+frameSpeaker.addEventListener('click', toggleSound);
+new IntersectionObserver(([entry]) => {
+  frameSpeakerVisible = entry.intersectionRatio >= .5;
+  updateSpeakers();
+}, {threshold: .5}).observe(frameSpeaker);
+function updateSpeakers() {
+  const open = root.hasAttribute('data-in-club');
+  // Once the painted sound button scrolls away, use the floating club control.
+  speaker.hidden = !open || frameSpeakerVisible;
+}
 byId('reset').addEventListener('click', () => {
   const withFocus = byId('reset').matches(':focus-visible');
   sound.unlock(); sound.click('key'); shutDown('off');

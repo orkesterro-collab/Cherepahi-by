@@ -8,7 +8,7 @@ button { appearance: none; -webkit-appearance: none; font: inherit; color: inher
 :where(button,a,input,select,textarea,summary):focus-visible { outline: 2px solid #c97f38; outline-offset: 3px; }
 #ride { position: relative; isolation: isolate; height: 100vh; height: 100dvh; width: 100%; overflow: hidden; background: #10100f; }
 #road-world, #road-world picture, #ride-pose, #camera, .plate, #controls, #ride-title { position: absolute; inset: 0; width: 100%; height: 100%; }
-#road-world { z-index: 0; overflow: hidden; opacity: 0; transition: opacity .32s ease-out; pointer-events: none; }
+#road-world { z-index: 0; overflow: hidden; opacity: 0; transition: opacity 1.15s ease-in-out; pointer-events: none; }
 #road-world img, #road-film { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 43%; display: block; }
 #road-film { opacity: 0; }
 #road-film[data-playing] { opacity: 1; }
@@ -17,8 +17,8 @@ button { appearance: none; -webkit-appearance: none; font: inherit; color: inher
 :root[data-stage="running"] #ride-pose { transform: translateY(var(--travel-y,22vh)); transition-duration: 1s; }
 #camera { isolation: isolate; }
 .plate { display: block; pointer-events: none; }
-#night { z-index: 0; transition: opacity .64s ease; }
-#day-bike { z-index: 1; opacity: 0; transition: opacity .57s ease; }
+#night { z-index: 0; transition: opacity 1.15s ease-in-out; }
+#day-bike { z-index: 1; opacity: 0; transition: opacity 1.15s ease-in-out; }
 :root[data-stage="running"][data-bike-ready] #night { opacity: 0; }
 :root[data-stage="running"][data-bike-ready] #day-bike { opacity: 1; }
 .part { position: absolute; display: block; pointer-events: none; user-select: none; -webkit-user-select: none; }
@@ -50,14 +50,34 @@ button { appearance: none; -webkit-appearance: none; font: inherit; color: inher
 :root[data-key-on] .key-fob { transform: rotate(-38deg); }
 #controls { z-index: 5; pointer-events: none; }
 .hotspot { position: absolute; border: 0; padding: 0; background: transparent; pointer-events: auto; border-radius: 22%; touch-action: pan-y; }
-#ride-title { z-index: 3; pointer-events: none; opacity: 0; visibility: hidden; color: #fff8eb; transition: opacity .24s, visibility 0s .24s; }
-:root[data-in-club] #ride-title { opacity: 1; visibility: visible; transition: opacity .65s; }
-#ride-title::before { content: ''; position: absolute; inset: 72% 0 0; background: linear-gradient(transparent,rgba(12,13,12,.22) 46%,rgba(9,10,9,.68)); }
-#ride-crest { position: absolute; display: block; top: max(5.2%,env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); width: clamp(62px,16.8vmin,102px); height: auto; filter: drop-shadow(0 2px 4px #0b080954); }
-#motto { position: absolute; bottom: max(8.8%,48px); left: 0; right: 0; margin: 0; text-align: center; font: italic 500 clamp(21px,6.15vmin,48px)/1.16 Georgia,'Times New Roman',serif; letter-spacing: -.035em; text-shadow: 0 1px 5px #000,0 3px 20px #100b07; }
-.scroll-cue { position: absolute; left: 50%; bottom: max(5px,env(safe-area-inset-bottom)); transform: translateX(-50%); display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; color: #fff8ed; font-size: 12px; letter-spacing: .08em; text-decoration: none; text-shadow: 0 1px 5px #000; }
-.scroll-cue::after { content: ''; width: 7px; height: 7px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: translateY(-2px) rotate(45deg); }
-:root[data-in-club] .scroll-cue { pointer-events: auto; }
+#ride-title {
+  z-index: 3; display: grid; place-items: center; overflow: hidden; container-type: size;
+  background: #10100f; pointer-events: none; opacity: 0; visibility: hidden;
+  transition: opacity .25s ease, visibility 0s .25s;
+}
+#ride-title::before {
+  content: ''; position: absolute; inset: -32px;
+  background: center / cover url('assets/ride-finale.webp');
+  filter: blur(28px) brightness(.38);
+}
+:root[data-in-club] #ride-title { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 1.2s ease-in-out; }
+.final-frame {
+  position: relative; width: min(100%, calc(100vh * 934 / 1685));
+  width: min(100cqw, calc(100cqh * 934 / 1685)); aspect-ratio: 934 / 1685;
+}
+#final-photo { width: 100%; height: 100%; display: block; }
+.final-frame :is(a, button) { position: absolute; transform: translate(-50%, -50%); border: 0; background: transparent; padding: 0; border-radius: 8px; touch-action: pan-y; }
+.final-controls button { min-height: 26px; }
+.final-controls [data-control="key"] { left: 52%; top: 63%; width: max(44px, 11%); height: max(44px, 6%); }
+.final-controls [data-control="rocker"] { left: 83%; top: 53.3%; width: max(44px, 7%); height: 3.1%; }
+.final-controls [data-control="starter"] { left: 83%; top: 57%; width: max(44px, 7%); height: 3.3%; }
+.final-controls [data-control="throttle"] { right: 0; top: 56%; width: max(36px, 10%); height: max(40px, 5%); transform: translateY(-50%); }
+.scroll-cue { left: 50%; top: 95.35%; width: max(48px, 7%); height: max(44px, 5%); }
+#frame-speaker { left: 90.2%; top: 94.5%; width: 11.1%; aspect-ratio: 1; border-radius: 50%; color: #f7f2e9; }
+#frame-speaker::before { content: ''; position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); min-width: 44px; min-height: 44px; width: 100%; height: 100%; }
+#frame-speaker svg { display: none; }
+#frame-speaker[aria-pressed="false"] { display: grid; place-items: center; background: #191b19; box-shadow: inset 0 0 0 1px #c7c2b87d; }
+#frame-speaker[aria-pressed="false"] svg { display: block; width: 50%; height: 50%; }
 .utility { position: fixed; right: max(13px,env(safe-area-inset-right)); bottom: max(13px,env(safe-area-inset-bottom)); width: 47px; height: 47px; display: grid; place-items: center; background: #151715e8; border: 1px solid #c7c2b87d; border-radius: 50%; color: #f7f2e9; z-index: 20; }
 .utility svg { display: block; width: 20px; height: 20px; }
 .utility .slash, .utility[aria-pressed="false"] .waves { display: none; }
@@ -68,5 +88,4 @@ button { appearance: none; -webkit-appearance: none; font: inherit; color: inher
 @keyframes idle-pulse { 0%,19%,42%,64%,87%,100% { transform: translate(0,0); } 8%,55% { transform: translate(.17px,.38px); } 28%,74% { transform: translate(-.16px,-.27px); } }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .fallback { position: absolute; inset: auto 1rem 2rem; text-align: center; color: #efede4; }
-@media (max-height: 460px) and (orientation: landscape) { #ride-crest { width: 49px; top: 5%; } #motto { bottom: 10.5%; } .scroll-cue { bottom: 0; min-height: 32px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition-duration: .01s !important; transition-delay: 0s !important; scroll-behavior: auto !important; } }
