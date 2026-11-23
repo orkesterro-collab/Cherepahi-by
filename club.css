@@ -72,6 +72,14 @@
 .history-teaser figure { margin: 0; }
 .history-teaser figure img { display: block; width: 100%; height: auto; }
 .history-teaser figcaption { margin-top: .55rem; color: var(--muted); font-size: .8rem; }
+.journal-layout { display: grid; grid-template-columns: minmax(0,.75fr) minmax(0,1.25fr); gap: 1rem clamp(32px,6vw,84px); align-items: start; }
+.journal h2 { font-size: clamp(2.75rem,4.8vw,4.4rem); }
+.journal-links { border-bottom: 1px solid #b7b8ac; }
+.journal-links a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; border-top: 1px solid #b7b8ac; text-decoration: none; }
+.journal-links strong { display: block; font: 700 clamp(1.55rem,2.5vw,2.4rem)/1.15 var(--display); }
+.journal-links small { display: block; margin-top: .28rem; font-size: .94rem; line-height: 1.45; color: var(--muted); }
+.journal-links b { color: var(--red); font-size: 1.4rem; }
+.journal-links a:hover strong { color: var(--red); text-decoration: underline; text-underline-offset: .16em; }
 .gallery { background: #191a18; color: #f5f3ed; color-scheme: dark; }
 .gallery-heading, .rides-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: clamp(25px,3.4vw,50px); }
 .gallery-scroll { display: none; }
@@ -126,7 +134,7 @@ body:has(#lightbox[open]) { overflow: hidden; }
   .about-layout { gap: 32px; }
 }
 @media (max-width: 720px) {
-  .guide-heading, .club-types, .club-exchange, .club-council { grid-template-columns: 1fr; }
+  .guide-heading, .club-types, .club-exchange, .club-council, .journal-layout { grid-template-columns: 1fr; }
   .guide-heading { row-gap: .85rem; }
   .club-exchange { row-gap: 1.5rem; }
 }
