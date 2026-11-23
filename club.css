@@ -26,7 +26,7 @@
 .chapter p { margin: 1.08rem 0 0; max-width: 48ch; }
 .chapter p.kicker { margin: 0 0 1.05rem; color: var(--red); font: 700 .84rem/1.3 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .chapter p.intro { font-size: clamp(1.16rem,1.55vw,1.55rem); line-height: 1.42; letter-spacing: -.02em; }
-.about-layout, .contact-layout, .reasons-layout { display: grid; grid-template-columns: .96fr 1.04fr; gap: clamp(35px,8vw,122px); }
+.about-layout, .contact-layout { display: grid; grid-template-columns: .96fr 1.04fr; gap: clamp(35px,8vw,122px); }
 .about-layout { align-items: center; }
 .about-copy > p:not(.intro):not(.kicker) { color: var(--muted); }
 .text-link { display: inline-block; text-decoration-thickness: 1px; text-underline-offset: .24em; font-weight: 650; padding: .55rem 0; }
@@ -36,13 +36,24 @@
 .club-portrait img { display: block; width: 100%; height: auto; aspect-ratio: 1.56; object-fit: cover; object-position: 47% 65%; }
 .club-portrait figcaption, .gallery-grid figcaption { font-size: .85rem; padding-top: .55rem; }
 .club-portrait figcaption { color: var(--muted); }
-.together { padding-top: 0; }
-.reasons-layout { align-items: start; border-top: 1px solid #c0c0b6; padding-top: clamp(40px,5vw,78px); }
-.reasons-layout h2 { font-size: clamp(2.75rem,4.8vw,4.4rem); }
-.reasons { margin: 0; }
-.reasons > div + div { padding-top: 1rem; border-top: 1px solid #cecdc5; margin-top: 1rem; }
-.reasons dt { font-weight: 720; font-size: 1.18rem; letter-spacing: -.02em; }
-.reasons dd { margin: .3rem 0 0; color: var(--muted); max-width: 55ch; }
+.club-guide { padding-top: 0; }
+.club-guide > .wrap { border-top: 1px solid #c0c0b6; padding-top: clamp(38px,5vw,72px); }
+.guide-heading, .club-types { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); column-gap: clamp(32px,6vw,84px); }
+.guide-heading { align-items: end; margin-bottom: clamp(24px,3vw,44px); }
+.guide-heading h2 { font-size: clamp(2.75rem,4.8vw,4.4rem); max-width: 14ch; }
+.guide-heading p { margin: 0; color: var(--muted); }
+.club-types { margin: 0; }
+.club-types > div { border-top: 1px solid #c0c0b6; padding-block: clamp(16px,2.1vw,30px); }
+.club-types dt { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 .7rem; font: 700 clamp(1.35rem,2vw,1.85rem)/1.15 var(--display); }
+.type-code { color: var(--red); font-size: 1.32em; white-space: nowrap; }
+.club-types dd { margin: 0; max-width: 55ch; }
+.type-name { display: block; margin: .25rem 0 .55rem; color: var(--muted); font-size: .875rem; }
+.guide-sources { border-top: 1px solid #c0c0b6; color: var(--muted); }
+.guide-sources summary { width: fit-content; padding: .7rem .15rem; cursor: pointer; font-weight: 600; }
+.guide-sources ul { margin: 0; padding: 0 0 .5rem 1.3rem; }
+.guide-sources li { margin-top: .25rem; }
+.guide-sources a { text-underline-offset: .2em; }
+#club-content .guide-sources a:hover { color: var(--red); }
 .gallery, .contact { background: #191a18; color: #f5f3ed; color-scheme: dark; }
 .gallery-heading, .rides-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: clamp(25px,3.4vw,50px); }
 .gallery-scroll { display: none; }
@@ -114,18 +125,21 @@ body:has(#lightbox[open]) { overflow: hidden; }
   #club-nav.open { display: grid; gap: 0; }
   #club-nav a { width: 100%; border-top: 1px solid #3a3c35; padding: 8px 0; }
   .chapter { scroll-margin-top: 62px; }
-  .about-layout,.contact-layout,.reasons-layout { gap: 32px; }
+  .about-layout,.contact-layout { gap: 32px; }
   .form-submit { flex-wrap: wrap; gap: 9px; }
   .form-submit small { max-width: 44ch; }
+}
+@media (max-width: 720px) {
+  .guide-heading, .club-types { grid-template-columns: 1fr; }
+  .guide-heading { row-gap: .85rem; }
 }
 @media (max-width: 640px) {
   .wrap { width: 89%; }
   .club-name img { width: 32px; height: 34px; }
   .club-name strong { font-size: 1.24rem; }
-  .about-layout,.contact-layout,.reasons-layout { grid-template-columns: 1fr; }
+  .about-layout,.contact-layout { grid-template-columns: 1fr; }
   .about-layout { gap: 22px; }
   .club-portrait img { aspect-ratio: 1.5; }
-  .reasons-layout h2 br { display: none; }
   .gallery-heading { align-items: center; }
   .gallery-scroll { display: flex; gap: 7px; }
   .gallery-grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 83%; gap: 11px; overflow-x: auto; margin-right: -6.18%; padding: 2px 6% 5px 0; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #5d5e56 #21221e; }

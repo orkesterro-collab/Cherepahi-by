@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#131312">
-  <meta name="description" content="Минский мотоклуб «Черепахи». Заведи чоппер, выезжай с колонной и загляни в клубный календарь поездок по Беларуси.">
+  <meta name="description" content="Минский мотоклуб «Черепахи». Клубные поездки по Беларуси и короткий разбор того, чем отличаются MC, MCC, фри-группы и другие объединения мотоциклистов.">
   <title>Черепахи · Мотоклуб Минск</title>
   <link rel="icon" type="image/webp" href="assets/club-crest.webp">
   <link rel="preload" as="image" href="assets/cockpit-studio-portrait.webp" media="(max-aspect-ratio: 3/4)">
@@ -13,7 +13,7 @@
   <link rel="preload" as="image" href="assets/elbrus-charm.webp">
   <link rel="preload" as="fetch" href="assets/harley-sportster.wav" crossorigin="anonymous">
   <link rel="stylesheet" href="scene.css?v=daylight-2">
-  <link rel="stylesheet" href="club.css">
+  <link rel="stylesheet" href="club.css?v=club-types-1">
   <script type="module" src="ignition.js?v=daylight-2"></script>
   <script type="module" src="club.js"></script>
 </head>
@@ -68,7 +68,7 @@
           </a>
           <button id="menu-toggle" type="button" aria-controls="club-nav" aria-expanded="false">Меню <span aria-hidden="true"></span></button>
           <nav id="club-nav" aria-label="Разделы клуба">
-            <a href="#about">Кто мы</a><a href="#together">Почему в клубе</a><a href="#gallery">Галерея</a><a href="#rides">Поездки</a><a href="#contact">Связь</a>
+            <a href="#about">Кто мы</a><a href="#together">Виды клубов</a><a href="#gallery">Галерея</a><a href="#rides">Поездки</a><a href="#contact">Связь</a>
           </nav>
         </div>
       </header>
@@ -87,14 +87,49 @@
           </figure>
         </div>
       </section>
-      <section class="chapter together" id="together" aria-labelledby="together-title">
-        <div class="wrap reasons-layout">
-          <h2 id="together-title">Почему лучше<br> быть в клубе</h2>
-          <dl class="reasons">
-            <div><dt>Есть с кем ехать</dt><dd>На старте договариваемся о темпе и остановках. Даже если едешь с нами впервые, знаешь, где снова встретится вся колонна.</dd></div>
-            <div><dt>Выручим в дороге</dt><dd>У одного найдётся инструмент, у другого — место в кофре. Если чей-то мотоцикл встал, есть кому остаться рядом.</dd></div>
-            <div><dt>У каждого свой маршрут</dt><dd>Кто-то знает тихую дорогу к Нарочи, кто-то — хороший съезд к озеру под Браславом. Из таких находок и складываются наши поездки.</dd></div>
+      <section class="chapter club-guide" id="together" aria-labelledby="together-title">
+        <div class="wrap">
+          <div class="guide-heading">
+            <h2 id="together-title">Какие бывают мотоклубы</h2>
+            <p>MC и MCC переводятся одинаково — «мотоклуб». Разница видна в том, как принимают новичков и чего ждут от своих. Даже у клубов с одинаковыми буквами на жилете правила могут различаться.</p>
+          </div>
+          <dl class="club-types">
+            <div>
+              <dt><span class="type-code" lang="en">MC</span> Традиционный мотоклуб</dt>
+              <dd><span class="type-name" lang="en">Motorcycle Club</span>Есть устав и клубные должности. Новичок обычно ездит с клубом как гость, а затем проходит кандидатский срок. При вступлении он получает полные «цвета» — комплект клубных нашивок. От своих ждут участия в собраниях и общих делах.</dd>
+            </div>
+            <div>
+              <dt><span class="type-code" lang="en">MCC</span> Клуб любителей мотоциклов</dt>
+              <dd><span class="type-name" lang="en">Motor Cycle Club</span>В MCC часто приходят ради постоянной компании, общих поездок и слётов. Порядок приёма бывает проще, чем в традиционном MC. При этом устав минского Racing Clan времён MCC предусматривал и взносы, и кандидатский срок.</dd>
+            </div>
+            <div>
+              <dt><span class="type-code" lang="en">FG</span> Фри-группа</dt>
+              <dd><span class="type-name" lang="en">Free Group</span>Свободные райдеры собираются на выезды по договорённости, часто без должностей и взносов. В Беларуси FG бывает и признанным статусом. Гродненские Nashorn Free Riders получили его вместе с правом носить свои «цвета».</dd>
+            </div>
+            <div>
+              <dt><span class="type-code" lang="en">RC</span> Клуб совместных поездок</dt>
+              <dd><span class="type-name" lang="en">Riding Club</span>Главное здесь — сами выезды. У поездки есть маршрут, точка сбора и ведущий колонны. В Southern Cruisers, например, сам выбираешь, когда ехать, и можешь приехать на мотоцикле любой марки.</dd>
+            </div>
+            <div>
+              <dt><span class="type-code" lang="en">MG</span> Мотогруппа</dt>
+              <dd><span class="type-name" lang="en">Moto Group</span>Общее название компании мотоциклистов. Одних объединяет город, других — интерес к дальним поездкам. В немецкой MG Mandern, например, раз в месяц собираются за одним столом. На встречу может заглянуть любой желающий.</dd>
+            </div>
+            <div>
+              <dt><span class="type-code" lang="en">OC / OG</span> Клуб владельцев</dt>
+              <dd><span class="type-name" lang="en">Owners Club / Owners Group</span>Поводом познакомиться служит сам мотоцикл. Harley Owners Group собирает поклонников марки Harley-Davidson, а клубы Honda Gold Wing — любителей одной модели. Здесь можно найти попутчика и заодно узнать, какой кофр подойдёт без переделок.</dd>
+            </div>
           </dl>
+          <details class="guide-sources">
+            <summary>Источники и примеры</summary>
+            <ul>
+              <li><a href="https://www.ivhog.org/how-motorcycle-clubs-work-a-beginners-guide/">Обозначения клубов — Indian Valley H.O.G.</a></li>
+              <li><a href="https://racingclan.by/forum/%D1%80%C2%A4%D1%80%D1%95%D1%81%D1%92%D1%81%D1%93%D1%80%D1%98/%D1%80%D1%99%D1%80%C2%BB%D1%81%D1%93%D1%80%C2%B1-racing-clan/%D1%80%D1%9B-%D1%80%D1%99%D1%80%C2%BB%D1%81%D1%93%D1%80%C2%B1%D1%80%C2%B5/339-%D1%80%D1%98%D1%81%D1%93%D1%81%E2%80%9A%D1%80%C2%B0%D1%80%D1%96-%D1%80%D1%94%D1%80%C2%BB%D1%81%D1%93%D1%80%C2%B1%D1%80%C2%B0">Устав минского Racing Clan времён MCC</a></li>
+              <li><a href="https://nashorn.ucoz.com/index/0-2">О статусе FG — Nashorn Free Riders</a></li>
+              <li><a href="https://www.scrcnwa.com/faq/">Как проходят выезды Southern Cruisers</a></li>
+              <li><a href="https://mgmandern.de/index.php/ueber-uns/">Встречи мотогруппы Mandern</a></li>
+              <li><a href="https://www.harley-davidson.com/gb/en/content/hog/local-chapters.html">Отделения Harley Owners Group</a></li>
+            </ul>
+          </details>
         </div>
       </section>
       <section class="chapter gallery" id="gallery" aria-labelledby="gallery-title">
