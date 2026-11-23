@@ -77,19 +77,25 @@ enlarged.addEventListener('touchend', event => {
 }, {passive: true});
 
 const form = byId('contact-form'), reply = byId('form-status');
+const manualCopy = byId('manual-copy'), preparedText = byId('prepared-text');
+function clearDraft() {
+  reply.textContent = '';
+  manualCopy.hidden = true;
+  preparedText.value = '';
+}
 document.querySelector('.routes').addEventListener('click', event => {
   const link = event.target.closest('[data-route]');
   if (!link) return;
   form.elements.topic.value = link.dataset.route;
-  reply.textContent = '';
+  clearDraft();
 });
 form.addEventListener('input', event => {
   if ('setCustomValidity' in event.target) event.target.setCustomValidity('');
-  reply.textContent = '';
+  clearDraft();
 });
-form.addEventListener('submit', event => {
+form.addEventListener('submit', async event => {
   event.preventDefault();
-  const {name, message} = form.elements;
+  const {name, email, topic, message} = form.elements;
   for (const field of [name, message]) {
     if (!field.value.trim()) {
       field.setCustomValidity(field === name ? 'Введи имя.' : 'Напиши сообщение.');
@@ -97,7 +103,20 @@ form.addEventListener('submit', event => {
       return;
     }
   }
-  reply.textContent = name.value.trim() + ', демо-сообщение готово. Тема — «' + form.elements.topic.value + '».';
+  clearDraft();
+  const text = [topic.value, '', message.value.trim(), '', name.value.trim()];
+  if (email.value.trim()) text.push(email.value.trim());
+  const draft = text.join('\n');
+  try {
+    await navigator.clipboard.writeText(draft);
+    reply.textContent = 'Скопировано. Теперь можно переслать сообщение.';
+  } catch {
+    manualCopy.hidden = false;
+    preparedText.value = draft;
+    preparedText.focus();
+    preparedText.select();
+    reply.textContent = 'Черновик готов. Скопируй выделенный текст.';
+  }
 });
 window.addEventListener('club-closed', () => {
   setMenu(false);

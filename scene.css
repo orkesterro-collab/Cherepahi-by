@@ -59,6 +59,7 @@ button { appearance: none; -webkit-appearance: none; font: inherit; color: inher
 .ride-crest { top: max(.9cqh,env(safe-area-inset-top)); height: min(22cqh,43cqw); width: auto; filter: drop-shadow(0 1px 2px #0008); }
 .ride-motto { bottom: max(8.2cqh,calc(env(safe-area-inset-bottom) + 48px)); margin: 0; font: bold min(7.3cqw,3.9cqh)/1.03 Georgia,"Times New Roman",serif; text-transform: uppercase; letter-spacing: .015em; text-shadow: 0 2px 4px #000, 0 0 12px #000c; }
 .ride-motto span { display: block; }
+.ride-motto small { display: block; margin-bottom: .55em; font: 700 clamp(.72rem,1.75cqh,1rem)/1.2 system-ui,sans-serif; letter-spacing: .09em; white-space: nowrap; }
 .scroll-cue { bottom: max(1.8cqh,env(safe-area-inset-bottom)); width: 48px; height: 44px; display: grid; place-items: center; color: #fff; border-radius: 6px; }
 :root[data-in-club] .scroll-cue { pointer-events: auto; }
 .scroll-cue svg { width: 30px; height: 30px; filter: drop-shadow(0 1px 3px #000); }

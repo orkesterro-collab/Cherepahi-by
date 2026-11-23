@@ -16,7 +16,7 @@
 .club-name img { object-fit: contain; width: 40px; height: 42px; }
 .club-name strong { display: block; font: 700 1.47rem/.95 var(--display); letter-spacing: .04em; text-transform: uppercase; }
 .club-name small { display: block; font-size: .75rem; margin-top: .35rem; letter-spacing: .035em; color: #c7c7bd; }
-#club-nav { display: flex; gap: clamp(16px,2.4vw,35px); align-items: center; }
+#club-nav { display: flex; gap: clamp(12px,1.65vw,25px); align-items: center; }
 #club-nav a, #menu-toggle { display: inline-flex; min-height: 44px; align-items: center; text-decoration: none; font-size: .94rem; }
 #club-nav a:hover { color: #ffa1a0; }
 #menu-toggle { display: none; background: none; border: 0; padding: 0; gap: 9px; }
@@ -42,6 +42,19 @@
 .guide-heading { align-items: end; margin-bottom: clamp(24px,3vw,44px); }
 .guide-heading h2 { font-size: clamp(2.75rem,4.8vw,4.4rem); max-width: 14ch; }
 .guide-heading p { margin: 0; color: var(--muted); }
+.club-way { background: #eae8df; }
+.club-exchange, .club-council { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .8rem clamp(32px,6vw,84px); }
+.club-exchange > div, .club-council { border-top: 1px solid #b7b8ac; padding-top: clamp(16px,2.1vw,28px); }
+.club-way h3 { margin: 0; font: 700 clamp(1.55rem,2.3vw,2.2rem)/1.1 var(--display); }
+.club-exchange p, .club-council p { margin: .7rem 0 0; max-width: 55ch; }
+.club-council { margin-top: clamp(26px,3.4vw,46px); }
+.club-council p { margin-top: 0; }
+.club-roles { margin-top: .5rem; }
+.club-roles summary { width: fit-content; cursor: pointer; padding: .6rem 0; color: var(--red); font-weight: 650; }
+.club-roles dl { margin: 0; }
+.club-roles dl > div { border-top: 1px solid #c3c4b8; padding-block: .55rem; }
+.club-roles dt { font-weight: 650; }
+.club-roles dd { margin: .12rem 0 0; }
 .club-types { margin: 0; }
 .club-types > div { border-top: 1px solid #c0c0b6; padding-block: clamp(16px,2.1vw,30px); }
 .club-types dt { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 .7rem; font: 700 clamp(1.35rem,2vw,1.85rem)/1.15 var(--display); }
@@ -64,6 +77,7 @@
 .gallery, .contact { background: #191a18; color: #f5f3ed; color-scheme: dark; }
 .gallery-heading, .rides-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: clamp(25px,3.4vw,50px); }
 .gallery-scroll { display: none; }
+.gallery-heading p { margin-top: .8rem; color: #d4d2c8; }
 .gallery-grid { display: grid; grid-template-columns: 1.45fr 1fr 1fr; gap: 22px 19px; }
 .gallery-grid figure:first-child { grid-row: span 2; display: flex; flex-direction: column; }
 .gallery-grid figure:first-child .photo { flex: 1; }
@@ -73,15 +87,13 @@
 @media (hover: hover) { .photo:hover img { transform: scale(1.035); } }
 .gallery-grid figcaption { color: #d4d2c8; }
 .rides { background: #e7e7df; }
-.rides-heading h2 em { color: var(--red); font: inherit; }
 .rides-heading p { margin: 0; font-size: .95rem; line-height: 1.45; color: var(--muted); }
 .routes { border-top: 1px solid #93968c; }
 .routes details { border-bottom: 1px solid #b7baae; }
-.routes summary { list-style: none; display: grid; grid-template-columns: 1.05fr 3.1fr .7fr 22px; align-items: center; gap: 16px; cursor: pointer; padding: clamp(18px,2.2vw,32px) 2px; }
+.routes summary { list-style: none; display: grid; grid-template-columns: 1fr 3.8fr 22px; align-items: center; gap: 16px; cursor: pointer; padding: clamp(18px,2.2vw,32px) 2px; }
 .routes summary::-webkit-details-marker { display: none; }
-.routes time { color: var(--red); font: 700 clamp(1.01rem,1.7vw,1.48rem)/1.15 var(--display); }
+.routes .duration { color: var(--red); font: 700 clamp(1.01rem,1.7vw,1.48rem)/1.15 var(--display); }
 .routes summary strong { font: 700 clamp(1.55rem,3vw,2.8rem)/1.05 var(--display); letter-spacing: -.02em; }
-.duration { color: var(--muted); font-size: .93rem; }
 .routes summary i { position: relative; width: 16px; height: 16px; }
 .routes summary i::after, .routes summary i::before { content: ''; position: absolute; width: 16px; height: 1.5px; top: 7px; background: currentColor; }
 .routes summary i::after { transform: rotate(90deg); }
@@ -89,11 +101,7 @@
 .route-body { margin: -2px 0 24px 21%; max-width: 51ch; }
 .route-body p { margin: 0 0 .3rem; }
 .contact-layout { align-items: start; }
-.contact .kicker { color: #ff9090 !important; }
 .contact-copy .intro { margin-top: 1.35rem; }
-.contact-copy address { margin-top: 2.1rem; font-style: normal; }
-.contact-copy address span, .contact-copy address small { display: block; }
-.contact-copy address small { font-size: .82rem; color: #bbbcb3; }
 #contact-form { display: grid; gap: 16px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 #contact-form label { display: grid; font-size: .9rem; font-weight: 570; gap: 6px; }
@@ -137,8 +145,9 @@ body:has(#lightbox[open]) { overflow: hidden; }
   .form-submit small { max-width: 44ch; }
 }
 @media (max-width: 720px) {
-  .guide-heading, .club-types { grid-template-columns: 1fr; }
+  .guide-heading, .club-types, .club-exchange, .club-council { grid-template-columns: 1fr; }
   .guide-heading { row-gap: .85rem; }
+  .club-exchange { row-gap: 1.5rem; }
 }
 @media (max-width: 640px) {
   .wrap { width: 89%; }
@@ -147,7 +156,7 @@ body:has(#lightbox[open]) { overflow: hidden; }
   .about-layout,.contact-layout { grid-template-columns: 1fr; }
   .about-layout { gap: 22px; }
   .club-portrait img { aspect-ratio: 1.5; }
-  .gallery-heading { align-items: center; }
+  .gallery-heading { align-items: flex-start; flex-wrap: wrap; gap: 14px; }
   .gallery-scroll { display: flex; gap: 7px; }
   .gallery-grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 83%; gap: 11px; overflow-x: auto; margin-right: -6.18%; padding: 2px 6% 5px 0; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #5d5e56 #21221e; }
   .gallery-grid figure:first-child { display: block; grid-row: auto; }
@@ -156,15 +165,9 @@ body:has(#lightbox[open]) { overflow: hidden; }
   .gallery-grid figcaption { padding-bottom: 5px; }
   .rides-heading { display: block; }
   .rides-heading p { margin-top: 12px; }
-  .rides-heading br { display: none; }
-  .routes summary { grid-template-columns: minmax(76px, .75fr) 1.7fr 16px; gap: 3px 9px; }
-  .routes time { grid-column: 1; grid-row: 1; }
-  .routes summary strong { grid-column: 2; grid-row: 1 / span 2; }
-  .routes summary i { grid-column: 3; grid-row: 1 / span 2; }
-  .duration { grid-column: 1; grid-row: 2; font-size: .82rem; }
+  .routes summary { grid-template-columns: 56px 1fr 16px; gap: 9px; }
   .route-body { margin-left: 0; }
-  .contact-copy address { margin-top: 1rem; }
   .footer-inner { display: grid; justify-content: start; grid-template-columns: 1fr auto; gap: 0 14px; }
   .footer-inner > span { grid-column: 1 / -1; }
 }
-@media (max-width: 350px) { .form-row { grid-template-columns: 1fr; } .routes summary { grid-template-columns: 75px 1fr 16px; } }
+@media (max-width: 350px) { .form-row { grid-template-columns: 1fr; } }
