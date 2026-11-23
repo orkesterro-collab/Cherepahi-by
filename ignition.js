@@ -1,5 +1,5 @@
 import { mountCockpit } from './cockpit.js?v=horn-1';
-import { ENGINE_CATCH_MS, MotorcycleAudio } from './sound.js?v=horn-1';
+import { ENGINE_CATCH_MS, MotorcycleAudio } from './sound.js?v=horn-2';
 
 const root = document.documentElement;
 const byId = id => document.getElementById(id);
@@ -31,7 +31,11 @@ function setStage(next) {
   key.setAttribute('aria-pressed', String(powered));
   rocker.setAttribute('aria-pressed', String(armed));
   throttle.disabled = next !== 'running';
-  horn.hidden = next !== 'running';
+  if (!powered) {
+    hornInput = null;
+    sound.stopHorn(true);
+  }
+  horn.hidden = !powered;
   status.textContent = messages[next];
 }
 function fire() {
@@ -50,7 +54,6 @@ function fire() {
 }
 function shutDown(next) {
   startRequested = false;
-  hornInput = null;
   clearTimeout(fireTimer); clearTimeout(welcomeTimer); clearTimeout(pressTimer); clearTimeout(revTimer);
   const wasOpen = root.hasAttribute('data-unlocked');
   if (wasOpen) {
@@ -68,7 +71,7 @@ function shutDown(next) {
   content.inert = true;
   content.hidden = true;
   grip.reset();
-  sound.stop();
+  sound.stopEngine();
   setStage(next);
 }
 function physicalPress() {
@@ -121,7 +124,7 @@ throttle.addEventListener('click', event => {
   if (event.detail === 0 || !window.PointerEvent) openThrottle();
 });
 function pressHorn(input) {
-  if (stage !== 'running' || hornInput !== null) return false;
+  if (stage === 'off' || hornInput !== null) return false;
   hornInput = input;
   sound.startHorn();
   return true;
@@ -152,7 +155,9 @@ horn.addEventListener('click', event => {
 function cancelHorn() {
   if (hornInput !== null) releaseHorn(hornInput, true);
 }
-horn.addEventListener('blur', cancelHorn);
+horn.addEventListener('blur', () => {
+  if (typeof hornInput === 'string') cancelHorn();
+});
 window.addEventListener('blur', cancelHorn);
 function resetHeldControls() {
   cancelHorn();

@@ -150,7 +150,7 @@ export class MotorcycleAudio {
   primeFuel() { this.pump.play(this.context, this.master, this.muted); }
   pressStarter() { this.starterButton.play(this.context, this.master, this.muted); }
   startHorn() {
-    if (this.startedAt === null || this.muted || document.hidden) return;
+    if (this.muted || document.hidden) return;
     this.unlock();
     clearTimeout(this.hornTimer);
     this.horn.play(this.context, this.master, this.muted);
@@ -248,8 +248,7 @@ export class MotorcycleAudio {
     }
     if(this.native){ this.native.pause();this.native=null; }
   }
-  stop() {
-    this.stopHorn(true);
+  stopEngine() {
     this.pump.stop();
     this.throttle.stop();
     this.version++;
