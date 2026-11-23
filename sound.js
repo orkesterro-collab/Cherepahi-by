@@ -16,12 +16,13 @@ function holdLevel(param, now) {
 }
 
 class AudioCue {
-  constructor(url, attack = 0, release = .018) {
+  constructor(url, attack = 0, release = .018, loop = false) {
     this.url = url;
     this.attack = attack;
     this.release = release;
     this.sequence = 0;
     this.native = new Audio(url);
+    this.native.loop = loop;
     this.native.preload = 'auto';
     this.native.volume = outputVolume;
   }
@@ -50,13 +51,16 @@ class AudioCue {
     const source = context.createBufferSource();
     const gain = context.createGain();
     source.buffer = this.buffer;
+    source.loop = this.native.loop;
     source.connect(gain).connect(master);
     if (this.attack) {
       const now = context.currentTime, end = now + this.buffer.duration;
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(1, now + this.attack);
-      gain.gain.setValueAtTime(1, end - this.release);
-      gain.gain.linearRampToValueAtTime(0, end);
+      if (!source.loop) {
+        gain.gain.setValueAtTime(1, end - this.release);
+        gain.gain.linearRampToValueAtTime(0, end);
+      }
     }
     this.voice = { source, gain, context };
     source.onended = () => {
@@ -94,6 +98,8 @@ export class MotorcycleAudio {
     this.pump = new AudioCue('assets/fuel-prime-half.wav');
     this.starterButton = new AudioCue('assets/starter-button.wav');
     this.throttle = new AudioCue('assets/harley-throttle.wav', .038, .050);
+    this.horn = new AudioCue('assets/motorcycle-horn.wav', .012, .034, true);
+    this.hornUntil = 0;
     this.revving = false;
     this.bytes = this.fetchTrack();
     document.addEventListener('visibilitychange', () => document.hidden ? this.pause() : this.restore());
@@ -116,6 +122,7 @@ export class MotorcycleAudio {
         this.pump.prepare(this.context);
         this.starterButton.prepare(this.context);
         this.throttle.prepare(this.context);
+        this.horn.prepare(this.context);
         // Start a zero sample inside the gesture so iOS can unlock the audio graph.
         const silent = this.context.createBufferSource();
         silent.buffer = this.context.createBuffer(1, 1, this.context.sampleRate);
@@ -133,6 +140,7 @@ export class MotorcycleAudio {
   }
   setMuted(value) {
     this.muted=value;
+    if (value) this.stopHorn(true);
     if (this.master) this.master.gain.setTargetAtTime(value ? 0 : outputVolume, this.context.currentTime, .018);
     if (this.native) this.native.muted = value || this.revving;
     this.pump.native.muted = value;
@@ -141,6 +149,20 @@ export class MotorcycleAudio {
   }
   primeFuel() { this.pump.play(this.context, this.master, this.muted); }
   pressStarter() { this.starterButton.play(this.context, this.master, this.muted); }
+  startHorn() {
+    if (this.startedAt === null || this.muted || document.hidden) return;
+    this.unlock();
+    clearTimeout(this.hornTimer);
+    this.horn.play(this.context, this.master, this.muted);
+    // A quick tap still lets the diaphragm sound for a few cycles.
+    this.hornUntil = performance.now() + 95;
+  }
+  stopHorn(immediate = false) {
+    clearTimeout(this.hornTimer);
+    const remaining = this.hornUntil - performance.now();
+    if (!immediate && remaining > 0) this.hornTimer = setTimeout(() => this.horn.stop(), remaining);
+    else this.horn.stop(immediate);
+  }
   rev() {
     if (this.startedAt === null || document.hidden) return;
     if (!this.throttle.play(this.context, this.master, this.muted, () => this.restoreIdle())) return;
@@ -227,6 +249,7 @@ export class MotorcycleAudio {
     if(this.native){ this.native.pause();this.native=null; }
   }
   stop() {
+    this.stopHorn(true);
     this.pump.stop();
     this.throttle.stop();
     this.version++;
@@ -235,6 +258,7 @@ export class MotorcycleAudio {
     this.restoreIdle();
   }
   pause() {
+    this.stopHorn(true);
     this.pump.stop(true);
     this.starterButton.stop(true);
     this.throttle.stop(true);

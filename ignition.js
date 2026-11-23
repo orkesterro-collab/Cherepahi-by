@@ -1,15 +1,17 @@
-import { mountCockpit } from './cockpit.js?v=daylight-2';
-import { ENGINE_CATCH_MS, MotorcycleAudio } from './sound.js';
+import { mountCockpit } from './cockpit.js?v=horn-1';
+import { ENGINE_CATCH_MS, MotorcycleAudio } from './sound.js?v=horn-1';
 
 const root = document.documentElement;
 const byId = id => document.getElementById(id);
 const key = byId('key'), rocker = byId('rocker'), starter = byId('starter'), throttle = byId('throttle');
+const horn = byId('horn');
 const speaker = byId('speaker'), content = byId('club-content'), title = byId('ride-title'), status = byId('status');
 const sound = new MotorcycleAudio();
 const grip = mountCockpit();
 const TITLE_DELAY_MS = 2500;
 let stage = 'off', fireTimer, welcomeTimer, pressTimer, revTimer;
 let startRequested = false;
+let hornInput = null;
 const messages = {
   off: 'Двигатель заглушён. Приборы погасли.',
   powered: 'Нейтраль. Индикатор запуска красный.',
@@ -29,6 +31,7 @@ function setStage(next) {
   key.setAttribute('aria-pressed', String(powered));
   rocker.setAttribute('aria-pressed', String(armed));
   throttle.disabled = next !== 'running';
+  horn.hidden = next !== 'running';
   status.textContent = messages[next];
 }
 function fire() {
@@ -47,6 +50,7 @@ function fire() {
 }
 function shutDown(next) {
   startRequested = false;
+  hornInput = null;
   clearTimeout(fireTimer); clearTimeout(welcomeTimer); clearTimeout(pressTimer); clearTimeout(revTimer);
   const wasOpen = root.hasAttribute('data-unlocked');
   if (wasOpen) {
@@ -116,8 +120,46 @@ throttle.addEventListener('pointerdown', event => {
 throttle.addEventListener('click', event => {
   if (event.detail === 0 || !window.PointerEvent) openThrottle();
 });
-document.addEventListener('visibilitychange', () => { if (document.hidden) grip.reset(); });
-window.addEventListener('pagehide', () => grip.reset());
+function pressHorn(input) {
+  if (stage !== 'running' || hornInput !== null) return false;
+  hornInput = input;
+  sound.startHorn();
+  return true;
+}
+function releaseHorn(input, immediate = false) {
+  if (hornInput !== input) return;
+  hornInput = null;
+  sound.stopHorn(immediate);
+}
+horn.addEventListener('pointerdown', event => {
+  if (event.isPrimary && event.button === 0 && pressHorn(event.pointerId)) horn.setPointerCapture(event.pointerId);
+});
+horn.addEventListener('pointerup', event => releaseHorn(event.pointerId));
+for (const type of ['pointercancel','lostpointercapture']) {
+  horn.addEventListener(type, event => releaseHorn(event.pointerId, true));
+}
+for (const type of ['keydown','keyup']) {
+  horn.addEventListener(type, event => {
+    if (event.key !== ' ' && event.key !== 'Enter') return;
+    event.preventDefault();
+    if (type === 'keyup') releaseHorn(event.key);
+    else if (!event.repeat) pressHorn(event.key);
+  });
+}
+horn.addEventListener('click', event => {
+  if ((event.detail === 0 || !window.PointerEvent) && pressHorn('click')) releaseHorn('click');
+});
+function cancelHorn() {
+  if (hornInput !== null) releaseHorn(hornInput, true);
+}
+horn.addEventListener('blur', cancelHorn);
+window.addEventListener('blur', cancelHorn);
+function resetHeldControls() {
+  cancelHorn();
+  grip.reset();
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) resetHeldControls(); });
+window.addEventListener('pagehide', resetHeldControls);
 function toggleSound() {
   sound.unlock(); sound.setMuted(!sound.muted);
   const label = sound.muted ? 'Включить звук' : 'Выключить звук';

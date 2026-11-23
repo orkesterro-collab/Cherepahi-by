@@ -6,7 +6,7 @@ const portrait = {
   neutral: [446,680,32,23], runLamp: [490,680,17],
   lock: [472,1033], key: [435,932,78,153], charm: [401,1063,145,128], hinge: [472.5,1070.5],
   switchCorners: [[765,726],[816,733],[808,790],[752,782]], starter: [775,833,56],
-  grip: [[887,834,55.5],[945,845,52]]
+  grip: [[887,834,55.5],[945,845,52]], horn: [162,782,72,80]
 };
 const landscape = {
   variant: 'wide', width: 1672, height: 941, sky: 62, horizon: 218, tank: 808,
@@ -14,7 +14,7 @@ const landscape = {
   neutral: [822,438,24,17], runLamp: [852,438,13],
   lock: [836.5,655], key: [808.75,579.25,58.5,114.75], charm: [783.25,677.5,108.75,96], hinge: [836.875,683.125],
   switchCorners: [[1146,464],[1188,469],[1184,514],[1136,508]], starter: [1158,552,48],
-  grip: [[1268,548,44],[1522,577,41]]
+  grip: [[1268,548,44],[1522,577,41]], horn: [516,511,58,64]
 };
 const artCache = new Map();
 const byId = id => document.getElementById(id);
@@ -200,6 +200,9 @@ function fitParts(p, g, rockerBox) {
   const bottom=Math.max(g.y(sy)+Math.max(23,35*s), split+44);
   rect(byId('rocker'),leftBound(cx),top,width,split-top);
   rect(byId('starter'),leftBound(sx),split,width,bottom-split);
+  const [hx,hy,hw,hh]=p.horn;
+  const hornWidth=Math.max(44,hw*s), hornHeight=Math.max(44,hh*s);
+  rect(byId('horn'),g.x(hx)-hornWidth/2,g.y(hy)-hornHeight/2,hornWidth,hornHeight);
 }
 
 export function mountCockpit() {
