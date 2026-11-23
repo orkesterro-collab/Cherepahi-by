@@ -13,7 +13,7 @@
   <link rel="preload" as="image" href="assets/elbrus-charm.webp">
   <link rel="preload" as="fetch" href="assets/harley-sportster.wav" crossorigin="anonymous">
   <link rel="stylesheet" href="scene.css?v=daylight-2">
-  <link rel="stylesheet" href="club.css?v=club-types-1">
+  <link rel="stylesheet" href="club.css?v=history-1">
   <script type="module" src="ignition.js?v=daylight-2"></script>
   <script type="module" src="club.js"></script>
 </head>
@@ -56,7 +56,7 @@
         </a>
       </div>
       <p id="status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
-      <noscript><p class="fallback">Для запуска мотоцикла включи JavaScript в браузере.</p></noscript>
+      <noscript><p class="fallback">Для запуска мотоцикла включи JavaScript в браузере. <a href="history/">Читать историю мотодвижения</a></p></noscript>
     </section>
 
     <div id="club-content" hidden inert>
@@ -68,7 +68,7 @@
           </a>
           <button id="menu-toggle" type="button" aria-controls="club-nav" aria-expanded="false">Меню <span aria-hidden="true"></span></button>
           <nav id="club-nav" aria-label="Разделы клуба">
-            <a href="#about">Кто мы</a><a href="#together">Виды клубов</a><a href="#gallery">Галерея</a><a href="#rides">Поездки</a><a href="#contact">Связь</a>
+            <a href="#about">Кто мы</a><a href="#together">Виды клубов</a><a href="history/">История</a><a href="#gallery">Галерея</a><a href="#rides">Поездки</a><a href="#contact">Связь</a>
           </nav>
         </div>
       </header>
@@ -130,6 +130,18 @@
               <li><a href="https://www.harley-davidson.com/gb/en/content/hog/local-chapters.html">Отделения Harley Owners Group</a></li>
             </ul>
           </details>
+        </div>
+      </section>
+      <section class="chapter history-teaser" aria-labelledby="history-title">
+        <div class="wrap">
+          <div class="guide-heading">
+            <div><p class="kicker">Фотоистория</p><h2 id="history-title">Как зародилось мотодвижение</h2></div>
+            <div><p>Зачем первые клубы устраивали пробеги? Как сёстры Ван Бюрен пересекли Америку? И почему на баке первого минского мотоцикла написано «Москва»?</p><a class="text-link" href="history/">Читать и смотреть 43 фотографии&nbsp; →</a></div>
+          </div>
+          <figure>
+            <a href="history/#clubs" aria-label="Открыть главу о первых мотоклубах"><img src="history/media/los-angeles-preview.webp" width="1100" height="210" alt="Лос-Анджелесский мотоклуб выстроился на набережной Вениса в 1911 году" loading="lazy"></a>
+            <figcaption>Лос-Анджелесский мотоклуб в Венисе, 1911 год. West Coast Art Co. · <a href="https://www.loc.gov/pictures/item/2007661915">Библиотека Конгресса США</a> · <a href="https://commons.wikimedia.org/wiki/File:Los_Angeles_Motorcycle_Club_at_Venice,_Calif_LCCN2007661915.tif#Licensing">Общественное достояние</a></figcaption>
+          </figure>
         </div>
       </section>
       <section class="chapter gallery" id="gallery" aria-labelledby="gallery-title">

@@ -54,6 +54,13 @@
 .guide-sources li { margin-top: .25rem; }
 .guide-sources a { text-underline-offset: .2em; }
 #club-content .guide-sources a:hover { color: var(--red); }
+.history-teaser { background: #e8e6dd; }
+.history-teaser .guide-heading { margin-bottom: 1.4rem; }
+.history-teaser .guide-heading h2 { max-width: 17ch; }
+.history-teaser .text-link { margin-top: .45rem; }
+.history-teaser figure { margin: 0; }
+.history-teaser figure img { display: block; width: 100%; height: auto; }
+.history-teaser figcaption { margin-top: .55rem; color: var(--muted); font-size: .8rem; }
 .gallery, .contact { background: #191a18; color: #f5f3ed; color-scheme: dark; }
 .gallery-heading, .rides-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: clamp(25px,3.4vw,50px); }
 .gallery-scroll { display: none; }
